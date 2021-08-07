@@ -1,7 +1,10 @@
 const express = require('express');
 const Joi = require('joi');
+const bcrypt = require('bcrypt');
 const usuario_model = require('../models/usuario_model');
 const ruta = express.Router();
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const schema = Joi.object({
     nombre: Joi.string()
@@ -18,9 +21,22 @@ const schema = Joi.object({
         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net','co'] } })
 })
 
+let verificarToken = (req,res,next) =>{
+    let token = req.get('Authorization');
+    jwt.verify(token,config.get('configToken.SEED'),(err,decoded)=>{
+        if(err){
+            return res.status(401).json({
+                err
+            })
+        }
+        req.usuario = decoded.usuario;
+        next()
+    });
 
 
-ruta.get('/',(req,res)=>{
+}
+
+ruta.get('/',verificarToken,(req,res)=>{
     listarUsuarioActivo()
     .then( usuarios => {
         res.json(usuarios)
@@ -35,6 +51,17 @@ ruta.get('/',(req,res)=>{
 ruta.post('/',(req,res)=>{
 
     let body = req.body;
+
+    usuario_model.findOne({email:body.email},(err,usuario) =>{
+        if(err){
+            return res.status(400).json({error:'Server error'});
+        }
+        if(usuario){
+            return res.status(400).json({
+                mensaje:'El usuario ya existe'
+            })
+        }
+    })
     
     const {error, value} = schema.validate(
         {nombre:body.nombre,
@@ -115,9 +142,9 @@ async function crearUsuario(body){
         email  :body.email,
         nombre  :body.nombre,
         apellido :body.apellido,
-        password  :body.password,
         tipo :body.tipo,
         direccion :body.direccion,
+        password  :bcrypt.hashSync(body.password,10)
     });
 
     return await usuario.save();

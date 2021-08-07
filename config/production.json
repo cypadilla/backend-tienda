@@ -1,0 +1,10 @@
+{
+    "nombre":"Api Rest Express Usuarios y productos",
+    "configDB" :{
+        "HOST": "mongodb+srv://cristian:cristancho2020@tienda.dh2pt.mongodb.net/Tienda?retryWrites=true&w=majority"
+    },
+    "configToken":{
+        "SEED":"secret",
+        "expiration":"24h"
+    }
+}

@@ -83,6 +83,8 @@ async function actualizarProducto(id,body){
             nombre: body.nombre,
             descripcion: body.descripcion,
             precio: body.precio,
+            categoria: body.categoria,
+            
         }
     },{new:true});
     return producto
