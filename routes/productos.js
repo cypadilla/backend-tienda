@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('joi');
 const producto_model = require('../models/producto_model');
 const ruta = express.Router();
+const upload = require('../libs/storage')
 
 
 ruta.get('/',(req,res)=>{
@@ -26,8 +27,12 @@ ruta.get('/:id',(req,res)=>{
         })
 })
 
-ruta.post('/',(req,res)=>{
-    let resultado = crearProducto(req.body);
+ruta.post('/',upload.single('image'),(req,res)=>{
+   
+    console.log(req.file)
+    let resultado = crearProducto(req.body,req.file);
+
+    console.log(req.file)
 
     resultado.then( producto => {
         res.json({
@@ -66,13 +71,19 @@ async function listarUnProducto(id){
 
 }
 
-async function crearProducto(body){
-    let producto = new producto_model({
+async function crearProducto(body,file){
+    const producto = new producto_model({
         nombre  :body.nombre,
         descripcion  :body.descripcion,
         precio :body.precio,
         categoria :body.categoria
     });
+
+    if(file){
+        const {filename} = file
+        producto.setImgUrl(filename)
+        console.log(producto)
+    }
 
     return await producto.save();
 };

@@ -4,6 +4,7 @@ const config = require('config')
 const mongoose = require('mongoose');
 const usuario = require('./routes/usuarios');
 const producto = require('./routes/productos');
+const factura = require('./routes/facturas');
 const auth = require('./routes/auth');
 
 // conexion a base de datos
@@ -22,7 +23,10 @@ app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use('/api/usuarios',usuario);
 app.use('/api/productos',producto);
+app.use('/api/facturas',factura);
 app.use('/api/auth',auth)
+
+app.use('/public', express.static(`${__dirname}/storage/imgs`));
 
 // setear variable development ❯ $env:NODE_ENV="development"
 const port = process.env.PORT || 3000;

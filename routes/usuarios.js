@@ -36,6 +36,17 @@ let verificarToken = (req,res,next) =>{
 
 }
 
+ruta.get('/:id',(req,res)=>{
+    listarUsuario(req.params.id)
+    .then( usuarios => {
+        res.json(usuarios)
+    }).catch(err => {
+        res.status(400).json({
+            error:err
+        })
+    })
+});
+
 ruta.get('/',verificarToken,(req,res)=>{
     listarUsuarioActivo()
     .then( usuarios => {
@@ -152,6 +163,10 @@ async function crearUsuario(body){
 
 async function listarUsuarioActivo(){
     let usuarios = await usuario_model.find({"estado":true});
+    return usuarios;
+};
+async function listarUsuario(id){
+    let usuarios = await usuario_model.find({"_id":id});
     return usuarios;
 };
 

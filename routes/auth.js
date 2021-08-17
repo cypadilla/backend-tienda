@@ -21,7 +21,8 @@ ruta.post('/',(req,res) => {
                       usuario:{
                           _id:datos.id,
                           nombre:datos.nombre,
-                          email:datos.email
+                          email:datos.email,
+                          tipo:datos.tipo
                       },
                       jwtToken
                   })  
