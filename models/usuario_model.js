@@ -33,6 +33,12 @@ const usuarioSchema = new mongoose.Schema({
     imagen:{
         type:String,
         required:false
+    },
+    permisos:{
+        add:Boolean,
+        put:Boolean,
+        delete:Boolean,
+        required:false
     }
 });
 

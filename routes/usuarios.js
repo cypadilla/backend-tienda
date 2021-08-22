@@ -155,6 +155,7 @@ async function crearUsuario(body){
         apellido :body.apellido,
         tipo :body.tipo,
         direccion :body.direccion,
+        permisos:body.permisos,
         password  :bcrypt.hashSync(body.password,10)
     });
 
@@ -187,7 +188,8 @@ async function actualizarUsuarioById(id,body){
             apellido:body.apellido,
             direccion:body.direccion,
             email:body.email,
-            tipo:body.tipo
+            tipo:body.tipo,
+            permisos:body.permisos
         }
     },{new:true});
     return usuario;
