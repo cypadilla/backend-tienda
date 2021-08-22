@@ -135,8 +135,8 @@ ruta.put('/update/:id',(req,res)=>{
     })
 });
 
-ruta.delete('/:email',(req,res)=>{
-     desactivarUsuario(req.params.email)
+ruta.delete('/:id',(req,res)=>{
+     desactivarUsuario(req.params.id)
         .then( valor => {
             res.json({
                 usuario:valor
@@ -189,20 +189,23 @@ async function actualizarUsuarioById(id,body){
             direccion:body.direccion,
             email:body.email,
             tipo:body.tipo,
-            permisos:body.permisos
+            permisos:body.permisos,
+            permisosAdmin:body.permisosAdmin
         }
     },{new:true});
     return usuario;
 };
 
 
-async function desactivarUsuario(email){
-    let resultado = await usuario_model.findOneAndUpdate({"email":email},{
-        $set:{
-            estado:false
-        }
-    },{new: true});
-    return resultado;
+async function desactivarUsuario(id){
+    // let resultado = await usuario_model.findOneAndUpdate({"email":email},{
+    //     $set:{
+    //         estado:false
+    //     }
+    // },{new: true});
+    // return resultado;
+
+    return await usuario_model.findOneAndDelete({"_id":id})
 }
 
 module.exports = ruta;

@@ -16,7 +16,7 @@ const usuarioSchema = new mongoose.Schema({
     },
     direccion:{
         type:String,
-        required:true
+        required:false
     },
     password:{
         type:String,
@@ -37,8 +37,11 @@ const usuarioSchema = new mongoose.Schema({
     permisos:{
         add:Boolean,
         put:Boolean,
+        delete:Boolean
+    },
+    permisosAdmin:{
+        put:Boolean,
         delete:Boolean,
-        required:false
     }
 });
 

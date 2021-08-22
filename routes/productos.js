@@ -2,7 +2,8 @@ const express = require('express');
 const Joi = require('joi');
 const producto_model = require('../models/producto_model');
 const ruta = express.Router();
-const upload = require('../libs/storage')
+const upload = require('../libs/storage');
+const usuario_model = require('../models/usuario_model');
 
 
 ruta.get('/',(req,res)=>{
@@ -60,6 +61,20 @@ ruta.put('/:id',(req,res) =>{
 
 })
 
+ruta.delete('/:id',(req,res)=>{
+    desactivarProducto(req.params.id)
+       .then( valor => {
+           res.json({
+               valor
+           })
+       }).catch(err => {
+           res.status(400).json({
+               err:err
+           })
+       });
+})
+
+
 async function listarProductos(){
     let productos = await producto_model.find();
     return productos;
@@ -99,6 +114,12 @@ async function actualizarProducto(id,body){
         }
     },{new:true});
     return producto
+}
+
+async function desactivarProducto(id){
+  
+    return await producto_model.findOneAndDelete({"_id":id})
+
 }
 
 module.exports = ruta;
