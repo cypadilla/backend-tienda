@@ -4,7 +4,8 @@ const producto_model = require('../models/producto_model');
 const ruta = express.Router();
 const upload = require('../libs/storage');
 const usuario_model = require('../models/usuario_model');
-
+const fs = require('fs-extra')
+const path = require('path')
 
 ruta.get('/',(req,res)=>{
     listarProductos()
@@ -46,8 +47,8 @@ ruta.post('/',upload.single('image'),(req,res)=>{
     })
 })
 
-ruta.put('/:id',(req,res) =>{
-    let resultado = actualizarProducto(req.params.id,req.body);
+ruta.put('/:id',upload.single('image'),(req,res) =>{
+    let resultado = actualizarProducto(req.params.id,req.body,req.file);
     
     resultado.then(producto =>{
         res.json({
@@ -95,31 +96,36 @@ async function crearProducto(body,file){
     });
 
     if(file){
-        const {filename} = file
-        producto.setImgUrl(filename)
+        const {path} = file
+        console.log(file)
+        producto.setImgUrl(path)
         console.log(producto)
     }
 
     return await producto.save();
 };
 
-async function actualizarProducto(id,body){
+async function actualizarProducto(id,body,file){
     let producto = await producto_model.findByIdAndUpdate(id,{
         $set:{
             nombre: body.nombre,
             descripcion: body.descripcion,
             precio: body.precio,
             categoria: body.categoria,
-            
+            imgUrl:file.path
         }
     },{new:true});
     return producto
 }
 
 async function desactivarProducto(id){
-  
-    return await producto_model.findOneAndDelete({"_id":id})
 
+    const photo = await producto_model.findOneAndDelete({"_id":id})
+    if(photo){
+        console.log(photo)
+        await fs.unlink(path.resolve(photo.imgUrl))
+    }
+     return photo;
 }
 
 module.exports = ruta;

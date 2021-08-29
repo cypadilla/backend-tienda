@@ -26,7 +26,7 @@ const productoSchema = new mongoose.Schema({
 productoSchema.methods.setImgUrl = function setImgUrl(filename){
     // const port = process.env.PORT || 3000;
     // const host = '';
-    this.imgUrl = `http://localhost:3000/public/${filename}`
+    this.imgUrl = `${filename}`
 }
 
 module.exports = mongoose.model('Producto',productoSchema);

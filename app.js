@@ -6,6 +6,7 @@ const usuario = require('./routes/usuarios');
 const producto = require('./routes/productos');
 const factura = require('./routes/facturas');
 const auth = require('./routes/auth');
+const path = require('path');
 
 // conexion a base de datos
 const uri = config.get('configDB.HOST');
@@ -26,7 +27,7 @@ app.use('/api/productos',producto);
 app.use('/api/facturas',factura);
 app.use('/api/auth',auth)
 
-app.use('/public', express.static(`${__dirname}/storage/imgs`));
+app.use('/uploads', express.static(path.resolve('uploads')))
 
 // setear variable development ❯ $env:NODE_ENV="development"
 const port = process.env.PORT || 3000;
